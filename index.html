@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>進入互素森林｜互素協繪</title>
+
+  <!-- Bootstrap 5 (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="whosueintro.css" />
+</head>
+
+<body>
+<main class="splash min-vh-100 d-flex align-items-center" aria-label="互素森林前導頁">
+
+  <!-- 螢光白點背景 -->
+  <div class="fireflies" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-7">
+          <section class="glass p-4 p-sm-5 text-center">
+            <div class="mb-3">
+              <span class="badge rounded-pill bg-dark">互素協繪</span>
+            </div>
+
+            <h1 class="display-5 fw-bold mb-3">進入互素森林</h1>
+            <p class="lead text-muted mb-4">
+              一起畫、一起玩、一起把故事走到完成的地方。
+            </p>
+
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+              <a class="btn btn-enter btn-enter--glass btn-enter--ring btn-lg" href="whosuepage.html"><span class="btn-enter__text">進入</span></a>
+            </div>
+
+            <div id="hint" class="hint mt-4 small">
+              入口的大樹上，一隻九條尾巴的黑貓在看著你。
+            </div>
+          </section>
+
+          <footer class="text-center mt-4 small text-muted">
+            © <span id="year"></span> 互素協繪 · WhoSue Union
+          </footer>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+</html>
