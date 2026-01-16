@@ -62,7 +62,7 @@ a{ text-decoration: none; }
   position: relative;
   z-index: 1;
   margin-top: var(--nav-h);
-  height: calc(100vh - var(--nav-h));
+  height: calc(100dvh - var(--nav-h));
   overflow-y: auto;
 
   scroll-snap-type: y mandatory;
@@ -305,6 +305,7 @@ a{ text-decoration: none; }
 /* 可選：隱藏捲動條（仍可滾動） */
 .content{
   scrollbar-width: none;       /* Firefox */
+  height: calc(100vh - var(--nav-h));
 }
 .content::-webkit-scrollbar{
   width: 0; height: 0;         /* Chrome/Safari */
@@ -427,4 +428,22 @@ a{ text-decoration: none; }
 .member-card2:hover .cover-baixu::after{
   -webkit-mask-image: url("./image/3_RL.webp");
   mask-image: url("./image/3_RL.webp");
+}
+
+@media (max-width: 991.98px){
+  .snap-section{
+    display: block;
+    overflow-y: auto;
+    padding: 24px 0;
+
+  /* mobile 修正 */
+  height: calc(100dvh - var(--nav-h));
+  }
+}
+
+@media (max-width: 575.98px){
+  .member-cover, .member-cover::after, .member-card2:hover .member-cover::after{
+    height: 190px;
+    background-size: 58% auto;
+  }
 }
