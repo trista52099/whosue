@@ -610,7 +610,7 @@ a{ text-decoration: none; }
 
 /* 固定每張幻燈片的框大小（你可調高度） */
 #carouselExampleCaptions .carousel-item{
-  height: clamp(240px, 70vh, 900px);
+  height: clamp(240px, 65vh, 900px);
   background: transparent; /* 留白時透出後面的背景 */
 }
 
@@ -619,6 +619,12 @@ a{ text-decoration: none; }
   width: 100%;
   height: 100%;
   object-fit: contain;      /* 不裁切、保比例，必要時留空白 */ /* [web:56][web:32] */
-  object-position: center;  /* 置中 */
+  object-position: top;  /* 置中 */
   display: block;
+}
+
+.btn-xs{
+
+  line-height: 1;
+  font-size: 12px;
 }
