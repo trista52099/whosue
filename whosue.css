@@ -22,6 +22,18 @@ html, body{
 body{
   margin: 0;
   color: var(--text);
+  background: var(--bg);
+
+  position: relative;
+}
+
+
+/* 背景圖層：最底 */
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
   background:
     radial-gradient(900px 500px at 20% 10%, rgba(79,140,255,.22), transparent 60%),
     radial-gradient(900px 500px at 90% 20%, rgba(140,79,255,.18), transparent 60%),
@@ -29,14 +41,10 @@ body{
     url("https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2400&q=80");
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
-  position: relative;
 }
 
-
-
-/* 背景壓暗（遮罩在最底層） */
-body::before{
+/* 你的黑色壓暗層：放在背景上面 */
+body::after{
   content:"";
   position: fixed;
   inset: 0;
@@ -44,6 +52,8 @@ body::before{
   z-index: -2;
   pointer-events: none;
 }
+
+
 
 a{ text-decoration: none; }
 .text-muted{ color: var(--muted) !important; }
