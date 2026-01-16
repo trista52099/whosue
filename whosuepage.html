@@ -43,6 +43,7 @@
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-lg-1">
           <li class="nav-item"><a class="nav-link" href="#story">背景故事</a></li>
           <li class="nav-item"><a class="nav-link" href="#members">成員簡介</a></li>
+          <li class="nav-item"><a class="nav-link" href="#live">樹洞觀測</a></li>
           <li class="nav-item"><a class="nav-link" href="#works">藝術創作</a></li>
           <li class="nav-item"><a class="nav-link" href="#links">相關連結</a></li>
           <li class="nav-item"><a class="nav-link" href="./index.html">回到入口</a></li>
@@ -190,6 +191,35 @@
         </div> -->
       </div>
     </section>
+
+    <!-- X. 樹洞觀測 -->
+    <section id="live" class="snap-section">
+
+            <div class="container">
+        <div class="d-flex align-items-end justify-content-between flex-wrap gap-2 mb-3">
+          <h2 class="section-title mb-0">樹洞觀測</h2>
+        </div>
+        <br>
+      <div class="container">
+<div class="glass p-3 p-sm-4">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+    <span id="liveCount" class="badge rounded-pill bg-danger d-none">LIVE</span>
+  </div>
+
+  <div id="liveGrid" class="row g-3"></div>
+
+  <div id="liveEmpty" class="text-center py-5">
+    <div class="h5 mb-2">目前無人開台中</div>
+    <div class="text-muted">有開台時會自動顯示直播畫面。</div>
+  </div>
+</div>
+
+<!-- Twitch Embed（整頁放一次） -->
+<script src="https://embed.twitch.tv/embed/v1.js"></script>
+    </div>
+  </section>
+
+
 
     <!-- 3. 藝術創作 -->
     <section id="works" class="snap-section">
@@ -480,8 +510,9 @@
 
               <ul class="text-muted mb-0 me-4">
                 <div class="d-flex justify-content-center flex-wrap gap-2">
-                  <span class="tag">不喝水 </span>
+                  <span class="tag">不喝水</span><span class="tag">兩棲類</span>
                 </div>
+                
                 <br>
                 <li>多半寄生朋友空間的藍色哈士鯊，會用腳爪在板子上亂塗的生物。
                 </li>
@@ -514,6 +545,89 @@
     ride: 'carousel',
     wrap: true
   });
+</script>
+
+
+<script>
+  // 你的四個 Twitch 帳號（user_login / 頻道網址最後那段）
+  const CHANNELS = ["darch0431", "whitecityfox", "rrrroger6669", "tsukio_miller"];
+
+  const liveGrid  = document.getElementById("liveGrid");
+  const liveEmpty = document.getElementById("liveEmpty");
+  const liveCount = document.getElementById("liveCount");
+
+  function clearGrid(){
+    liveGrid.innerHTML = "";
+  }
+
+  function showEmpty(){
+    liveCount.classList.add("d-none");
+    liveEmpty.classList.remove("d-none");
+    clearGrid();
+  }
+
+  function showLive(list){
+    liveEmpty.classList.add("d-none");
+    liveCount.classList.remove("d-none");
+    liveCount.textContent = `LIVE ${list.length}`;
+
+    clearGrid();
+
+    list.forEach((s) => {
+      const login = s.user_login;
+
+      // 建立一個 col + ratio + unique container id
+      const col = document.createElement("div");
+      col.className = "col-12 col-lg-6";
+
+      const card = document.createElement("div");
+      card.className = "glass p-2";
+
+      const title = document.createElement("div");
+      title.className = "small text-muted px-2 pt-2";
+      title.textContent = `${login}${s.title ? "｜" + s.title : ""}`;
+
+      const ratio = document.createElement("div");
+      ratio.className = "ratio ratio-16x9 mt-2";
+
+      const mount = document.createElement("div");
+      mount.id = `twitch-${login}`;
+
+      ratio.appendChild(mount);
+      card.appendChild(title);
+      card.appendChild(ratio);
+      col.appendChild(card);
+      liveGrid.appendChild(col);
+
+      // 建立 Twitch 播放器（每個 live 頻道一個）
+      new Twitch.Embed(mount.id, {
+        width: "100%",
+        height: "100%",
+        channel: login,
+        layout: "video",
+        autoplay: true,
+        muted: true,
+        parent: ["https://trista52099.github.io/whosue/whosuepage.html"]
+      });
+    });
+  }
+
+  async function fetchLive(){
+    try{
+      const res = await fetch(`/api/twitch-live?channels=${encodeURIComponent(CHANNELS.join(","))}`);
+      if(!res.ok) throw new Error("api failed");
+      const data = await res.json();
+
+      const live = Array.isArray(data.live) ? data.live : [];
+      if(live.length === 0) showEmpty();
+      else showLive(live);
+    }catch(e){
+      showEmpty();
+    }
+  }
+
+  fetchLive();
+  setInterval(fetchLive, 60 * 1000);
 </script>
 
 </body>
