@@ -214,8 +214,8 @@
   </div>
 </div>
 
-<!-- Twitch Embed（整頁放一次） -->
-<script src="https://embed.twitch.tv/embed/v1.js"></script>
+<!-- 改用官方文件的 player embed -->
+<script src="https://player.twitch.tv/js/embed/v1.js"></script>
     </div>
   </section>
 
@@ -534,9 +534,9 @@
     </div>
   </div>
 
-  <script>
+  <!-- <script>
     document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  </script> -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"
     referrerpolicy="no-referrer"></script>
 <script>
@@ -547,87 +547,72 @@
   });
 </script>
 
-
 <script>
-  // 你的四個 Twitch 帳號（user_login / 頻道網址最後那段）
-  const CHANNELS = ["darch0431", "whitecityfox", "rrrroger6669", "tsukio_miller"];
+  const CHANNELS = ["lulumi0526", "whitecityfox", "rrrroger6669", "tsukio_miller"];
 
   const liveGrid  = document.getElementById("liveGrid");
   const liveEmpty = document.getElementById("liveEmpty");
   const liveCount = document.getElementById("liveCount");
 
-  function clearGrid(){
-    liveGrid.innerHTML = "";
-  }
+  let onlineSet = new Set();
 
-  function showEmpty(){
-    liveCount.classList.add("d-none");
-    liveEmpty.classList.remove("d-none");
-    clearGrid();
-  }
-
-  function showLive(list){
-    liveEmpty.classList.add("d-none");
-    liveCount.classList.remove("d-none");
-    liveCount.textContent = `LIVE ${list.length}`;
-
-    clearGrid();
-
-    list.forEach((s) => {
-      const login = s.user_login;
-
-      // 建立一個 col + ratio + unique container id
-      const col = document.createElement("div");
-      col.className = "col-12 col-lg-6";
-
-      const card = document.createElement("div");
-      card.className = "glass p-2";
-
-      const title = document.createElement("div");
-      title.className = "small text-muted px-2 pt-2";
-      title.textContent = `${login}${s.title ? "｜" + s.title : ""}`;
-
-      const ratio = document.createElement("div");
-      ratio.className = "ratio ratio-16x9 mt-2";
-
-      const mount = document.createElement("div");
-      mount.id = `twitch-${login}`;
-
-      ratio.appendChild(mount);
-      card.appendChild(title);
-      card.appendChild(ratio);
-      col.appendChild(card);
-      liveGrid.appendChild(col);
-
-      // 建立 Twitch 播放器（每個 live 頻道一個）
-      new Twitch.Embed(mount.id, {
-        width: "100%",
-        height: "100%",
-        channel: login,
-        layout: "video",
-        autoplay: true,
-        muted: true,
-        parent: ["https://trista52099.github.io/whosue/whosuepage.html"]
-      });
-    });
-  }
-
-  async function fetchLive(){
-    try{
-      const res = await fetch(`/api/twitch-live?channels=${encodeURIComponent(CHANNELS.join(","))}`);
-      if(!res.ok) throw new Error("api failed");
-      const data = await res.json();
-
-      const live = Array.isArray(data.live) ? data.live : [];
-      if(live.length === 0) showEmpty();
-      else showLive(live);
-    }catch(e){
-      showEmpty();
+  function renderCount(){
+    const n = onlineSet.size;
+    if(n > 0){
+      liveEmpty.classList.add("d-none");
+      liveCount.classList.remove("d-none");
+      liveCount.textContent = `LIVE ${n}`;
+    }else{
+      liveCount.classList.add("d-none");
+      liveEmpty.classList.remove("d-none");
     }
   }
 
-  fetchLive();
-  setInterval(fetchLive, 60 * 1000);
+  CHANNELS.forEach((login) => {
+    // card
+    const col = document.createElement("div");
+    col.className = "col-12 col-lg-6 d-none"; // 預設先隱藏，收到 ONLINE 再顯示
+    col.dataset.login = login;
+
+    const card = document.createElement("div");
+    card.className = "glass p-2";
+
+    const ratio = document.createElement("div");
+    ratio.className = "ratio ratio-16x9";
+
+    const mount = document.createElement("div");
+    mount.id = `player-${login}`;
+
+    ratio.appendChild(mount);
+    card.appendChild(ratio);
+    col.appendChild(card);
+    liveGrid.appendChild(col);
+
+    // Twitch Player（文件提供的方式）
+    const player = new Twitch.Player(mount.id, {
+      width: "100%",
+      height: "100%",
+      channel: login,
+      autoplay: true,
+      muted: true,
+      parent: [location.hostname]
+    });
+
+    // ONLINE / OFFLINE 事件：用來切換顯示狀態 [page:0]
+    player.addEventListener(Twitch.Player.ONLINE, () => {
+      onlineSet.add(login);
+      col.classList.remove("d-none");
+      renderCount();
+    });
+
+    player.addEventListener(Twitch.Player.OFFLINE, () => {
+      onlineSet.delete(login);
+      col.classList.add("d-none");
+      renderCount();
+    });
+  });
+
+  renderCount();
 </script>
 
 </body>
