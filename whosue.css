@@ -305,7 +305,6 @@ a{ text-decoration: none; }
 /* 可選：隱藏捲動條（仍可滾動） */
 .content{
   scrollbar-width: none;       /* Firefox */
-  height: calc(100vh - var(--nav-h));
 }
 .content::-webkit-scrollbar{
   width: 0; height: 0;         /* Chrome/Safari */
@@ -435,15 +434,31 @@ a{ text-decoration: none; }
     display: block;
     overflow-y: auto;
     padding: 24px 0;
+    height: calc(100dvh - var(--nav-h));
+  }
 
-  /* mobile 修正 */
-  height: calc(100dvh - var(--nav-h));
+  .member-cover{
+    height: 190px;
+    background-size: 50% auto;
+  }
+
+  /* 讓所有成員的遮罩都跟著縮（包含 webkit 前綴） */
+  .member-cover::after{
+    -webkit-mask-size: 58% auto;
+    mask-size: 50% auto;
   }
 }
 
 @media (max-width: 575.98px){
-  .member-cover, .member-cover::after, .member-card2:hover .member-cover::after{
+  .member-cover{
     height: 190px;
-    background-size: 58% auto;
+    background-size: 40% auto;
+  }
+
+  /* 讓所有成員的遮罩都跟著縮（包含 webkit 前綴） */
+  .member-cover::after{
+    -webkit-mask-size: 58% auto;
+    mask-size: 40% auto;
   }
 }
+
