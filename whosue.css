@@ -450,10 +450,19 @@ a{ text-decoration: none; }
   mask-image: url("./image/3_RL.webp");
 }
 
+/* 手機先關掉 fixed（你已經有 md/手機斷點就放那裡也行） */
 @media (max-width: 991.98px){
-  body{
-    background-attachment: scroll;
-  }
+  body{ background-attachment: scroll; }
+}
+
+/* 專門針對 iOS（常見寫法） */
+@supports (-webkit-touch-callout: none){
+  body{ background-attachment: scroll; }
+}
+
+
+@media (max-width: 991.98px){
+
     .content{
     scroll-snap-type: none;  /* 手機先關掉 snap，避免卡住長內容 */
   }
