@@ -451,15 +451,18 @@ a{ text-decoration: none; }
 }
 
 @media (max-width: 991.98px){
-    body{
+  body{
     background-attachment: scroll;
   }
+    .content{
+    scroll-snap-type: none;  /* 手機先關掉 snap，避免卡住長內容 */
+  }
   .snap-section{
-    display: block;
-    padding: 24px 0;
-    overflow-y: auto; 
-    overflow: clip; 
-    height: calc(100dvh - var(--nav-h));
+    height: auto;                          /* 不要固定高度 */
+    min-height: calc(100dvh - var(--nav-h)); /* 至少滿版 */
+    align-items: flex-start;               /* 內容從上開始，不要垂直置中 */
+    overflow: visible;                     /* 不要裁切內容 */
+    padding: 24px 0;                       /* 你原本手機 padding 可保留 */
   }
 
   .member-cover{
@@ -472,17 +475,20 @@ a{ text-decoration: none; }
     -webkit-mask-size: 58% auto;
     mask-size: 50% auto;
   }
-}
 
-/* 手機版 */
-@media (max-width: 768px){
-  .modal-body img{
+    .modal-body img{
     display: block;
     margin: 0 auto;
     height: clamp(260px, 60vh, 820px);
     width: auto !important;        /* 寬度等比跟著高度算 */
     max-width: 100%;   /* 避免超出容器 */
   }
+
+}
+
+/* 手機版 */
+@media (max-width: 768px){
+
 
     .member-cover{
     height: 160px;
@@ -583,3 +589,12 @@ a{ text-decoration: none; }
     background: rgba(255,255,255,.5);
   }
 } /* [web:30] */
+
+
+.modal-body ul{
+  list-style: none;   /* 或 list-style-type: none; */
+}
+
+.modal-body p{
+  text-align: center;
+}
