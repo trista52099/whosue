@@ -1,7 +1,7 @@
 :root{
   --bg: #070b12;
-  --text: #eef2f8;
-  --muted: rgba(238,242,248,.72);
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, 0.8);
 
   --glass: rgba(255,255,255,.07);
   --glass-border: rgba(255,255,255,.14);
@@ -32,6 +32,8 @@ body{
   background-attachment: fixed;
   position: relative;
 }
+
+
 
 /* 背景壓暗（遮罩在最底層） */
 body::before{
@@ -71,7 +73,7 @@ a{ text-decoration: none; }
 
 /* 每段滿版 */
 .snap-section{
-  height: calc(100vh - var(--nav-h));
+  height: calc(100dvh - var(--nav-h));
   scroll-snap-align: start;
   scroll-snap-stop: always;
 
@@ -312,10 +314,23 @@ a{ text-decoration: none; }
 .member-card2{
   border-radius: 18px;
   overflow: hidden;
+  color: #888;
   transition: transform .18s ease, border-color .18s ease;
 }
+
 .member-card2:hover{
   transform: translateY(-4px);
+  color: #FFFFFF;
+}
+
+.member-card2 .tag{
+  color: #888;                 /* 預設暗 */
+  transition: color .18s ease, background-color .18s ease, border-color .18s ease;
+}
+
+.member-card2:hover .tag{
+  color: #fff;                 /* hover 亮 */
+  border-color: rgba(255,255,255,.65);
 }
 
 .member-cover{
@@ -325,6 +340,7 @@ a{ text-decoration: none; }
   background-position: center;
   background-repeat: no-repeat;
 }
+
 
 /* 黑色暗化層：預設有，hover 時淡出 */
 .member-cover::after{
@@ -337,9 +353,14 @@ a{ text-decoration: none; }
   pointer-events: none;
 }
 
+
+
 .member-card2:hover .member-cover::after{
   opacity: 0;  /* hover 回到原亮度 */
 }
+
+
+
 
 /* ====== 盧盧米：預設/hover 換圖 + 同步換 mask ====== */
 .cover-lulumii{
@@ -432,8 +453,9 @@ a{ text-decoration: none; }
 @media (max-width: 991.98px){
   .snap-section{
     display: block;
-    overflow-y: auto;
     padding: 24px 0;
+    overflow-y: auto; 
+    overflow: clip; 
     height: calc(100dvh - var(--nav-h));
   }
 
@@ -449,16 +471,112 @@ a{ text-decoration: none; }
   }
 }
 
-@media (max-width: 575.98px){
-  .member-cover{
-    height: 190px;
-    background-size: 40% auto;
+/* 手機版 */
+@media (max-width: 768px){
+  .modal-body img{
+    display: block;
+    margin: 0 auto;
+    height: clamp(260px, 60vh, 820px);
+    width: auto !important;        /* 寬度等比跟著高度算 */
+    max-width: 100%;   /* 避免超出容器 */
+  }
+
+    .member-cover{
+    height: 160px;
+    background-size: 70% auto;
   }
 
   /* 讓所有成員的遮罩都跟著縮（包含 webkit 前綴） */
   .member-cover::after{
     -webkit-mask-size: 58% auto;
-    mask-size: 40% auto;
+    mask-size: 70% auto;
+  }
+
+    .member-meta{
+    font-size: 16px;
+  }
+
+  .member-meta h3{
+    font-size: 20px;
   }
 }
 
+@media (max-width: 575.98px){
+
+  .snap-section{
+    padding-left: 20px;
+    padding-right: 20px;
+    /* 或：padding-inline: 20px; */
+  }
+  
+  .member-cover{
+    height: 150px;
+    background-size: 60% auto;
+  }
+
+  /* 讓所有成員的遮罩都跟著縮（包含 webkit 前綴） */
+  .member-cover::after{
+    -webkit-mask-size: 58% auto;
+    mask-size: 60% auto;
+  }
+
+  .member-meta{
+    font-size: 14px;
+  }
+
+  .member-meta h3{
+    font-size: 18px;
+  }
+
+  .text-muted{
+    font-size: 18px;
+  }
+
+
+}
+
+.modal-body{
+  max-height: 70dvh;   /* 依你的 header/footer 高度再調 */
+  overflow-y: auto;
+}
+
+.modal-glass{
+  background: rgba(10,14,22,.88);
+  border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #eef2f8;
+}
+
+.modal-glass .modal-header,
+.modal-glass .modal-footer{
+  border-color: rgba(255,255,255,.10);
+}
+
+
+/* 1) 標準：Firefox + 新版 Chromium（支援 scrollbar-*） */
+@supports (scrollbar-width: auto){
+  .modal-body{
+    scrollbar-width: thin;                       /* auto | thin | none */ /* [web:17] */
+    scrollbar-color: rgba(255,255,255,.35) rgba(255,255,255,.08); /* thumb track */ /* [web:16] */
+  }
+}
+
+/* 2) WebKit：Chrome / Edge / Safari 的細節圓角 */
+@supports selector(::-webkit-scrollbar){
+  .modal-body::-webkit-scrollbar{
+    width: 10px;
+  }
+  .modal-body::-webkit-scrollbar-track{
+    background: rgba(255,255,255,.08);
+    border-radius: 999px;
+  }
+  .modal-body::-webkit-scrollbar-thumb{
+    background: rgba(255,255,255,.35);
+    border-radius: 999px;
+    border: px solid rgba(255,255,255,.08); /* 做出留白感 */
+  }
+  .modal-body::-webkit-scrollbar-thumb:hover{
+    background: rgba(255,255,255,.5);
+  }
+} /* [web:30] */
