@@ -1,0 +1,640 @@
+:root{
+  --bg: #070b12;
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, 0.8);
+
+  --glass: rgba(255,255,255,.07);
+  --glass-border: rgba(255,255,255,.14);
+  --shadow: 0 20px 60px rgba(0,0,0,.45);
+
+  --primary: #4f8cff;
+  --nav-h: 72px; /* navbar 高度，若你 navbar 變高就調這裡 */
+}
+
+*{ box-sizing: border-box; }
+html{ scroll-behavior: smooth; }
+
+html, body{
+  height: 100%;
+  overflow: hidden; /* 整頁不捲動，只捲 main */
+}
+
+body{
+  margin: 0;
+  color: var(--text);
+  background: var(--bg);
+
+  position: relative;
+}
+
+
+/* 背景圖層：最底 */
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  background:
+    radial-gradient(900px 500px at 20% 10%, rgba(79,140,255,.22), transparent 60%),
+    radial-gradient(900px 500px at 90% 20%, rgba(140,79,255,.18), transparent 60%),
+    radial-gradient(1000px 700px at 50% 120%, rgba(34,197,94,.10), transparent 60%),
+    url("https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2400&q=80");
+  background-size: cover;
+  background-position: center;
+}
+
+/* 你的黑色壓暗層：放在背景上面 */
+body::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.72);
+  z-index: -2;
+  pointer-events: none;
+}
+
+
+
+a{ text-decoration: none; }
+.text-muted{ color: var(--muted) !important; }
+
+/* Navbar 固定在最上方（不跟 main 一起捲） */
+.navbar.nav-glass{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 10;
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+/* 滿版分頁捲動容器 */
+.content{
+  position: relative;
+  z-index: 1;
+  margin-top: var(--nav-h);
+  height: calc(100dvh - var(--nav-h));
+  overflow-y: auto;
+
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+/* 每段滿版 */
+.snap-section{
+  height: calc(100dvh - var(--nav-h));
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+
+  display: flex;
+  align-items: center; /* 想讓內容靠上：改成 flex-start */
+  padding: 0;
+}
+
+.snap-section > .container{
+  padding-top: 28px;
+  padding-bottom: 28px;
+}
+
+/* 交錯底色（很淡） */
+.snap-alt{
+  background: rgba(255,255,255,.02);
+  border-top: 1px solid rgba(255,255,255,.06);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+/* 玻璃面板 */
+.glass{
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.section-title{
+  font-weight: 900;
+  letter-spacing: .5px;
+  margin-bottom: 12px;
+}
+
+/* tags */
+.tag{
+  display: inline-block;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: rgba(255,255,255,.92);
+  background: rgba(79,140,255,.14);
+  border: 1px solid rgba(79,140,255,.25);
+}
+
+/* Member cards */
+.member-card{
+  border-radius: 18px;
+  overflow: hidden;
+
+  background: rgba(255,255,255,.00);
+  box-shadow: 0 10px 30px rgba(0,0,0,.00);
+  color: inherit;
+}
+.member-avatar{
+  height: 180px;
+  object-fit: cover;
+}
+
+/* Work cards */
+.work-card{
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.03);
+}
+.work-card img{
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Links */
+.link-list li + li{ margin-top: 10px; }
+.link-list a{ color: rgba(238,242,248,.88); }
+.link-list a:hover{ color: #fff; text-decoration: underline; }
+
+/* Buttons (入口頁同款) */
+.btn-enter{
+  position: relative;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 800;
+  letter-spacing: .4px;
+  transform: translateZ(0);
+  transition: transform .18s ease, filter .18s ease;
+}
+
+/* 文字：預設用一般顏色（不跑漸層） */
+.btn-enter__text{
+  display: inline-block;
+  color: rgba(255,255,255,.92);
+}
+
+/* hover：按鈕浮起 */
+.btn-enter:hover{ transform: translateY(-2px); }
+.btn-enter:active{ transform: translateY(0); filter: saturate(1.08); }
+.btn-enter:focus{ outline: none; box-shadow: 0 0 0 .25rem rgba(79,140,255,.25); }
+
+/* Ring */
+.btn-enter--ring::before{
+  content:"";
+  position:absolute; inset:-6px;
+  border-radius: 999px;
+  border: 2px solid rgba(124,247,255,.35);
+  opacity: .0;
+  transform: scale(.92);
+}
+.btn-enter--ring:hover::before{
+  opacity: 1;
+  animation: ringPulse 1.2s ease-out infinite;
+}
+@keyframes ringPulse{
+  0%   { transform: scale(.92); opacity: .75; }
+  100% { transform: scale(1.08); opacity: 0; }
+}
+
+/* Glass */
+.btn-enter--glass{
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 12px 35px rgba(0,0,0,.30);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.btn-enter--glass:hover{
+  background: rgba(255,255,255,.14);
+  box-shadow: 0 16px 45px rgba(0,0,0,.35);
+}
+
+/* hover 時「字」變成漸層並流動 */
+.btn-enter:hover .btn-enter__text{
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 117, 131, 0.75),
+    rgba(255, 203, 59, 0.75),
+    rgba(118, 185, 92, 0.75),
+    rgba(110, 149, 255, 0.75),
+    rgba(255, 117, 131, 0.75),
+    rgba(255, 203, 59, 0.75),
+    rgba(118, 185, 92, 0.75),
+    rgba(110, 149, 255, 0.75),
+    rgba(255, 117, 131, 0.75),
+    rgba(255, 203, 59, 0.75),
+    rgba(118, 185, 92, 0.75),
+    rgba(110, 149, 255, 0.75),
+    rgba(255, 117, 131, 0.75)
+  );
+
+  background-size: 300% 100%;
+  background-position: 0% 50%;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+
+  animation: btnTextGradient 2.8s linear infinite;
+}
+
+@keyframes btnTextGradient{
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+
+
+/* Fireflies (背景白點) */
+.fireflies{
+  position: fixed;
+  inset: 0;
+  z-index: -1; /* 在遮罩上、內容下 */
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.fireflies span{
+  position: absolute;
+  bottom: -14vh;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,255,255,.35) 35%, transparent 70%);
+  box-shadow: 0 0 16px rgba(255,255,255,.55), 0 0 38px rgba(255,255,255,.22);
+  opacity: 0;
+  animation: floatUp 11s linear infinite;
+}
+
+@keyframes floatUp{
+  0%   { transform: translateY(0) translateX(0); opacity: 0; }
+  10%  { opacity: .85; }
+  50%  { transform: translateY(-55vh) translateX(10px); opacity: .55; }
+  80%  { transform: translateY(-85vh) translateX(-8px); opacity: .35; }
+  100% { transform: translateY(-110vh) translateX(0); opacity: 0; }
+}
+
+/* 20 顆偽隨機 */
+.fireflies span:nth-child(1)  { left: 8%;  width: 5px;  height: 5px;  animation-duration: 12s;  animation-delay: 0s; }
+.fireflies span:nth-child(2)  { left: 15%; width: 8px;  height: 8px;  animation-duration: 10s;  animation-delay: 1s; }
+.fireflies span:nth-child(3)  { left: 22%; width: 4px;  height: 4px;  animation-duration: 14s;  animation-delay: 2.2s; }
+.fireflies span:nth-child(4)  { left: 30%; width: 7px;  height: 7px;  animation-duration: 11s;  animation-delay: 0.6s; }
+.fireflies span:nth-child(5)  { left: 38%; width: 10px; height: 10px; animation-duration: 9s;   animation-delay: 2.8s; }
+
+.fireflies span:nth-child(6)  { left: 45%; width: 5px;  height: 5px;  animation-duration: 13s;  animation-delay: 1.6s; }
+.fireflies span:nth-child(7)  { left: 52%; width: 8px;  height: 8px;  animation-duration: 10.5s;animation-delay: 3.1s; }
+.fireflies span:nth-child(8)  { left: 58%; width: 4px;  height: 4px;  animation-duration: 15s;  animation-delay: 0.9s; }
+.fireflies span:nth-child(9)  { left: 63%; width: 7px;  height: 7px;  animation-duration: 11.5s;animation-delay: 2.0s; }
+.fireflies span:nth-child(10) { left: 69%; width: 12px; height: 12px; animation-duration: 9.5s; animation-delay: 3.6s; }
+
+.fireflies span:nth-child(11) { left: 74%; width: 5px;  height: 5px;  animation-duration: 12.5s;animation-delay: 1.1s; }
+.fireflies span:nth-child(12) { left: 79%; width: 8px;  height: 8px;  animation-duration: 10.2s;animation-delay: 2.6s; }
+.fireflies span:nth-child(13) { left: 84%; width: 4px;  height: 4px;  animation-duration: 16s;  animation-delay: 0.2s; }
+.fireflies span:nth-child(14) { left: 88%; width: 7px;  height: 7px;  animation-duration: 11.2s;animation-delay: 3.0s; }
+.fireflies span:nth-child(15) { left: 93%; width: 10px; height: 10px; animation-duration: 9.2s; animation-delay: 1.9s; }
+
+.fireflies span:nth-child(16) { left: 12%; width: 7px;  height: 7px;  animation-duration: 12.2s;animation-delay: 4.0s; }
+.fireflies span:nth-child(17) { left: 27%; width: 5px;  height: 5px;  animation-duration: 13.6s;animation-delay: 4.4s; }
+.fireflies span:nth-child(18) { left: 49%; width: 4px;  height: 4px;  animation-duration: 15.5s;animation-delay: 4.8s; }
+.fireflies span:nth-child(19) { left: 71%; width: 7px;  height: 7px;  animation-duration: 11.8s;animation-delay: 5.2s; }
+.fireflies span:nth-child(20) { left: 90%; width: 5px;  height: 5px;  animation-duration: 14.2s;animation-delay: 5.6s; }
+
+@media (prefers-reduced-motion: reduce){
+  .fireflies span{ animation: none; opacity: .2; }
+}
+
+/* 可選：隱藏捲動條（仍可滾動） */
+.content{
+  scrollbar-width: none;       /* Firefox */
+}
+.content::-webkit-scrollbar{
+  width: 0; height: 0;         /* Chrome/Safari */
+}
+.member-card2{
+  border-radius: 18px;
+  overflow: hidden;
+  color: #888;
+  transition: transform .18s ease, border-color .18s ease;
+}
+
+.member-card2:hover{
+  transform: translateY(-4px);
+  color: #FFFFFF;
+}
+
+.member-card2 .tag{
+  color: #888;                 /* 預設暗 */
+  transition: color .18s ease, background-color .18s ease, border-color .18s ease;
+}
+
+.member-card2:hover .tag{
+  color: #fff;                 /* hover 亮 */
+  border-color: rgba(255,255,255,.65);
+}
+
+.member-cover{
+  position: relative;         /* 讓 ::after 疊在上面 */
+  height: 220px;
+  background-size: 65% auto;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+/* 黑色暗化層：預設有，hover 時淡出 */
+.member-cover::after{
+  content:"";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.45);   /* 暗度：0.25~0.65 自己調 */
+  opacity: 1;
+  transition: opacity .25s ease;
+  pointer-events: none;
+}
+
+
+
+.member-card2:hover .member-cover::after{
+  opacity: 0;  /* hover 回到原亮度 */
+}
+
+
+
+
+/* ====== 盧盧米：預設/hover 換圖 + 同步換 mask ====== */
+.cover-lulumii{
+  background-image: url("./image/1_LULU.webp");
+}
+.cover-lulumii::after{
+  -webkit-mask-image: url("./image/1_LULU.webp");
+  mask-image: url("./image/1_LULU.webp");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 65% auto;
+  mask-size: 65% auto;
+}
+.member-card2:hover .cover-lulumii{
+  background-image: url("./image/2_LULU.webp");
+}
+.member-card2:hover .cover-lulumii::after{
+  -webkit-mask-image: url("./image/2_LULU.webp");
+  mask-image: url("./image/2_LULU.webp");
+}
+
+/* ====== 白城 ====== */
+.cover-shiro{
+  background-image: url("./image/1_BB.webp");
+}
+.cover-shiro::after{
+  -webkit-mask-image: url("./image/1_BB.webp");
+  mask-image: url("./image/1_BB.webp");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 65% auto;
+  mask-size: 65% auto;
+}
+.member-card2:hover .cover-shiro{
+  background-image: url("./image/2_BB.webp");
+}
+.member-card2:hover .cover-shiro::after{
+  -webkit-mask-image: url("./image/2_BB.webp");
+  mask-image: url("./image/2_BB.webp");
+}
+
+/* ====== 若玖 ====== */
+.cover-ruojiu{
+  background-image: url("./image/1_69.webp");
+}
+.cover-ruojiu::after{
+  -webkit-mask-image: url("./image/1_69.webp");
+  mask-image: url("./image/1_69.webp");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 65% auto;
+  mask-size: 65% auto;
+}
+.member-card2:hover .cover-ruojiu{
+  background-image: url("./image/2_69.webp");
+}
+.member-card2:hover .cover-ruojiu::after{
+  -webkit-mask-image: url("./image/2_69.webp");
+  mask-image: url("./image/2_69.webp");
+}
+
+/* ====== 百旭 ====== */
+.cover-baixu{
+  background-image: url("./image/1_RL.webp");
+}
+.cover-baixu::after{
+  -webkit-mask-image: url("./image/1_RL.webp");
+  mask-image: url("./image/1_RL.webp");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 65% auto;
+  mask-size: 65% auto;
+}
+.member-card2:hover .cover-baixu{
+  background-image: url("./image/3_RL.webp");
+}
+.member-card2:hover .cover-baixu::after{
+  -webkit-mask-image: url("./image/3_RL.webp");
+  mask-image: url("./image/3_RL.webp");
+}
+
+/* 手機先關掉 fixed（你已經有 md/手機斷點就放那裡也行） */
+@media (max-width: 991.98px){
+  body{ background-attachment: scroll; }
+}
+
+/* 專門針對 iOS（常見寫法） */
+@supports (-webkit-touch-callout: none){
+  body{ background-attachment: scroll; }
+}
+
+
+@media (max-width: 991.98px){
+
+    .content{
+    scroll-snap-type: none;  /* 手機先關掉 snap，避免卡住長內容 */
+  }
+  .snap-section{
+    height: auto;                          /* 不要固定高度 */
+    min-height: calc(100dvh - var(--nav-h)); /* 至少滿版 */
+    align-items: flex-start;               /* 內容從上開始，不要垂直置中 */
+    overflow: visible;                     /* 不要裁切內容 */
+    padding: 24px 0;                       /* 你原本手機 padding 可保留 */
+  }
+
+  .member-cover{
+    height: 190px;
+    background-size: 50% auto;
+  }
+
+  /* 讓所有成員的遮罩都跟著縮（包含 webkit 前綴） */
+  .member-cover::after{
+    -webkit-mask-size: 58% auto;
+    mask-size: 50% auto;
+  }
+
+    .modal-body img{
+    display: block;
+    margin: 0 auto;
+    height: clamp(260px, 60vh, 820px);
+    width: auto !important;        /* 寬度等比跟著高度算 */
+    max-width: 100%;   /* 避免超出容器 */
+  }
+
+}
+
+/* 手機版 */
+@media (max-width: 768px){
+
+
+    .member-cover{
+    height: 160px;
+    background-size: 70% auto;
+  }
+
+  /* 讓所有成員的遮罩都跟著縮（包含 webkit 前綴） */
+  .member-cover::after{
+    -webkit-mask-size: 58% auto;
+    mask-size: 70% auto;
+  }
+
+    .member-meta{
+    font-size: 16px;
+  }
+
+  .member-meta h3{
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 575.98px){
+
+  .snap-section{
+    padding-left: 20px;
+    padding-right: 20px;
+    /* 或：padding-inline: 20px; */
+  }
+  
+  .member-cover{
+    height: 150px;
+    background-size: 60% auto;
+  }
+
+  /* 讓所有成員的遮罩都跟著縮（包含 webkit 前綴） */
+  .member-cover::after{
+    -webkit-mask-size: 58% auto;
+    mask-size: 60% auto;
+  }
+
+  .member-meta{
+    font-size: 14px;
+  }
+
+  .member-meta h3{
+    font-size: 18px;
+  }
+
+  .text-muted{
+    font-size: 18px;
+  }
+
+
+}
+
+.modal-body{
+  max-height: 70dvh;   /* 依你的 header/footer 高度再調 */
+  overflow-y: auto;
+}
+
+.modal-glass{
+  background: rgba(10,14,22,.88);
+  border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #eef2f8;
+}
+
+.modal-glass .modal-header,
+.modal-glass .modal-footer{
+  border-color: rgba(255,255,255,.10);
+}
+
+
+/* 1) 標準：Firefox + 新版 Chromium（支援 scrollbar-*） */
+@supports (scrollbar-width: auto){
+  .modal-body{
+    scrollbar-width: thin;                       /* auto | thin | none */ /* [web:17] */
+    scrollbar-color: rgba(255,255,255,.35) rgba(255,255,255,.08); /* thumb track */ /* [web:16] */
+  }
+}
+
+/* 2) WebKit：Chrome / Edge / Safari 的細節圓角 */
+@supports selector(::-webkit-scrollbar){
+  .modal-body::-webkit-scrollbar{
+    width: 10px;
+  }
+  .modal-body::-webkit-scrollbar-track{
+    background: rgba(255,255,255,.08);
+    border-radius: 999px;
+  }
+  .modal-body::-webkit-scrollbar-thumb{
+    background: rgba(255,255,255,.35);
+    border-radius: 999px;
+    border: px solid rgba(255,255,255,.08); /* 做出留白感 */
+  }
+  .modal-body::-webkit-scrollbar-thumb:hover{
+    background: rgba(255,255,255,.5);
+  }
+} /* [web:30] */
+
+
+.modal-body ul{
+  list-style: none;   /* 或 list-style-type: none; */
+}
+
+.modal-body p{
+  text-align: center;
+}
+
+/* 固定每張幻燈片的框大小（你可調高度） */
+#carouselExampleCaptions .carousel-item{
+  height: clamp(240px, 65vh, 900px);
+  background: transparent; /* 留白時透出後面的背景 */
+}
+
+/* 圖片維持比例塞進框內，不夠的地方留白 */
+#carouselExampleCaptions .carousel-item img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;      /* 不裁切、保比例，必要時留空白 */ /* [web:56][web:32] */
+  object-position: top;  /* 置中 */
+  display: block;
+}
+
+.btn-xs{
+
+  line-height: 1;
+  font-size: 12px;
+}
